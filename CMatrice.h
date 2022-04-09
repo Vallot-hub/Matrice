@@ -1,5 +1,8 @@
 #ifndef CMATRICE_H
 #define CMATRICE_H
+#include <stdio.h>
+
+using namespace std;
 
 template <typename Type> class CMatrice
 {
@@ -28,4 +31,7 @@ template<typename Type> CMatrice<Type>::~CMatrice()
 {
 
 }
+
+#include "CMatrice.tpp"  //suite des definitions des methodes
+
 #endif

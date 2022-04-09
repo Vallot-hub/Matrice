@@ -1,0 +1,3 @@
+﻿  main.cpp
+LINK : warning LNK4076: invalid incremental status file 'Debug\Matrice.ilk' (which will be deleted); linking nonincrementally
+  Matrice.vcxproj -> Z:\C++\Matrice\Debug\Matrice.exe

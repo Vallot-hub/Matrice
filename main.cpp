@@ -5,21 +5,21 @@ using namespace std;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    //std::cout << "Hello World!\n";
     int nbLigne = 2;
     int nbColonne = 2;
-    int E = 5;
-    CMatrice<int> Md;
-    Md.SetNombreColonne(nbColonne);
-    Md.SetNombreLigne(nbLigne);
-    cout << Md.iGetNombreColonne() << endl;
+    double E = 5.56;
+    CMatrice<double> Md(2,2);
+    cout << Md.iMATGetNombreColonne() << endl;
+    //Md.ModifierElement(1,1,E);
     for (int i = 0; i < nbLigne; i++)
     {
         for (int j = 0; j < nbColonne; j++)
         {
-            Md.ModifierElement(i,j,E);
+            Md.MATModifierElement(i,j,E);
         }
     }
+    Md.MATAfficherMatrice();
 }
 
 

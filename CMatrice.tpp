@@ -15,14 +15,13 @@ template<typename Type> CMatrice<Type>::CMatrice(int iNbLigne, int iNbColonne)
     }
 }
 
-template<typename T> void CMatrice<T>::MATAfficherMatrice() 
+template<typename Type> void CMatrice<Type>::MATAfficherMatrice() 
 {
-	int iBoucle1 = 0;
-	int iBoucle2 = 0;
+	
 
-	for (iBoucle1 = 0; iBoucle1 < iMATNombreLigne; iBoucle1++) 
+	for (int iBoucle1 = 0; iBoucle1 < iMATNombreLigne; iBoucle1++) 
     {
-		for (iBoucle2 = 0; iBoucle2 < iMATNombreColonne; iBoucle2++) 
+		for (int iBoucle2 = 0; iBoucle2 < iMATNombreColonne; iBoucle2++) 
         {
 			MATAfficherElement(iBoucle1, iBoucle2);
 			cout << "\t";
@@ -32,7 +31,19 @@ template<typename T> void CMatrice<T>::MATAfficherMatrice()
 }
 
 
-template<typename T> void CMatrice<T>::MATAfficherElement(int iLigne, int iColonne) 
+template<typename Type> void CMatrice<Type>::MATAfficherElement(int iLigne, int iColonne) 
 {
 	cout << pTMATElement[iLigne][iColonne];
+}
+
+
+template<typename Type> void CMatrice<Type>::MATSommeCte(Type TCte) 
+{
+	for (int iBoucle1 = 0; iBoucle1 < iMATNombreLigne; iBoucle1++) 
+    {
+		for (int iBoucle2 = 0; iBoucle2 < iMATNombreColonne; iBoucle2++) 
+        {
+			pTMATElement[iBoucle1][iBoucle2] += TCte;
+		}
+	}
 }

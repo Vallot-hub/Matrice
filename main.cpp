@@ -19,6 +19,7 @@ int main()
             Md.MATModifierElement(i,j,E);
         }
     }
+    Md.MATSommeCte(-2.5);
     Md.MATAfficherMatrice();
 }
 

@@ -21,6 +21,7 @@ public:
 	void MATModifierElement(int iLigne, int iColonne, Type TElement);
 	void MATAfficherMatrice();
 	void MATAfficherElement(int iLigne, int iColonne);
+	void MATSommeCte(Type TCte);
 };
 
 template<typename Type> CMatrice<Type>::CMatrice()

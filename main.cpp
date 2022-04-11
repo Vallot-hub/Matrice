@@ -19,7 +19,8 @@ int main()
             Md.MATModifierElement(i,j,E);
         }
     }
-    Md.MATSommeCte(-2.5);
+    Md.MATSommeCte(-2.5);  //Avoir pour la soustraction ## unsigned int ?????
+    Md.MATProduitCte(-2);
     Md.MATAfficherMatrice();
 }
 

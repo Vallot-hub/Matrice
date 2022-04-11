@@ -47,3 +47,14 @@ template<typename Type> void CMatrice<Type>::MATSommeCte(Type TCte)
 		}
 	}
 }
+
+template<typename Type> void CMatrice<Type>::MATProduitCte(Type TCte) 
+{
+	for (int iBoucle1 = 0; iBoucle1 < iMATNombreLigne; iBoucle1++) 
+    {
+		for (int iBoucle2 = 0; iBoucle2 < iMATNombreColonne; iBoucle2++) 
+        {
+			pTMATElement[iBoucle1][iBoucle2] *= TCte;
+		}
+	}
+}

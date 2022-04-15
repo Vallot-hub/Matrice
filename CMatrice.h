@@ -10,7 +10,7 @@ template <typename Type> class CMatrice
 private:
 	unsigned int uiMATNombreColonne;
 	unsigned int uiMATNombreLigne;
-	Type** pTMATElement;
+	Type** ppTMATElement;
 
 public:
 	CMatrice();
@@ -18,15 +18,15 @@ public:
 	~CMatrice();
 	
 	/** Acceseur **/
-	Type TMATLireElement(int iLigne, int iColonne) { return pTMATElement[iLigne][iColonne]; }
+	Type TMATLireElement(int iLigne, int iColonne) { return ppTMATElement[iLigne][iColonne]; }
 	int iMATGetNombreColonne() { return uiMATNombreColonne; };
 	int iMATGetNombreLigne() { return uiMATNombreLigne; };
 	void MATModifierElement(int iLigne, int iColonne, Type TElement);
-	void MATAfficherMatrice();
 	void MATAfficherElement(int iLigne, int iColonne);
 	
 	/** Operation basic **/
 	void MATSommeCte(Type TCte);
+	void MATAfficherMatrice();
 	CMatrice & MATProduitCte(Type TCte);
 	CMatrice & MATDivisionCte(Type TCte);
 
@@ -47,12 +47,19 @@ public:
 
 template<typename Type> CMatrice<Type>::CMatrice()
 {
+	uiMATNombreLigne = 0;
+	uiMATNombreColonne = 0;
 
+	ppTMATElement = nullptr;
 }
 
 template<typename Type> CMatrice<Type>::~CMatrice()
 {
-
+	/*Désallocation mémoire*/
+	for (unsigned int uiBoucle = 0; uiBoucle < uiMATNombreLigne; uiBoucle++) {
+		delete[] ppTMATElement[uiBoucle];
+	}
+	delete[] ppTMATElement;
 }
 
 #include "CMatrice.tpp"  //suite des definitions des methodes de la template

@@ -9,18 +9,18 @@ template<typename Type> CMatrice<Type>& CMatrice<Type>::operator=(CMatrice <Type
 		/*Libération mémoire*/
 		for (unsigned int uiBoucleAlloc = 0; uiBoucleAlloc < uiMATNombreLigne; uiBoucleAlloc++) 
 		{
-			delete[] pTMATElement[uiBoucleAlloc];
+			delete[] ppTMATElement[uiBoucleAlloc];
 		}
-		delete[] pTMATElement;
+		delete[] ppTMATElement;
 
 		/*Nouvelle affectation de valeur*/
 		uiMATNombreLigne = MATMatrice2.uiMATLireNbLigne();
 		uiMATNombreColonne = MATMatrice2.uiMATLireNbColonne();
 
 		/*Nouvelle allocation de la mémoire*/
-		pTMATElement = new Type*[uiMATNombreLigne];
+		ppTMATElement = new Type*[uiMATNombreLigne];
 		for (unsigned int uiBoucleAlloc = 0; uiBoucleAlloc < uiMATNombreLigne; uiBoucleAlloc++) {
-			pTMATElement[uiBoucleAlloc] = new Type[uiMATNombreColonne];
+			ppTMATElement[uiBoucleAlloc] = new Type[uiMATNombreColonne];
 		}
 	}
 
@@ -38,7 +38,7 @@ template<typename Type> CMatrice<Type>& CMatrice<Type>::operator=(CMatrice <Type
 
 template<typename Type> void CMatrice<Type>::MATModifierElement(int iLigne, int iColonne, Type TElement)
 {
-    pTMATElement[iLigne][iColonne] = TElement;
+    ppTMATElement[iLigne][iColonne] = TElement;
 }
 
 template<typename Type> CMatrice<Type>::CMatrice(int iNbLigne, int iNbColonne)
@@ -46,10 +46,10 @@ template<typename Type> CMatrice<Type>::CMatrice(int iNbLigne, int iNbColonne)
     uiMATNombreColonne = iNbColonne;
     uiMATNombreLigne = iNbLigne;
 
-    pTMATElement = new Type*[iNbLigne];
+    ppTMATElement = new Type*[iNbLigne];
     for (int iBoucle = 0; iBoucle < iNbLigne; iBoucle++)
     {
-        pTMATElement[iBoucle] = new Type[iNbColonne];
+        ppTMATElement[iBoucle] = new Type[iNbColonne];
     }
 }
 
@@ -68,7 +68,7 @@ template<typename Type> void CMatrice<Type>::MATAfficherMatrice()
 
 template<typename Type> void CMatrice<Type>::MATAfficherElement(int iLigne, int iColonne) 
 {
-	cout << pTMATElement[iLigne][iColonne];
+	cout << ppTMATElement[iLigne][iColonne];
 }
 
 
@@ -78,7 +78,7 @@ template<typename Type> void CMatrice<Type>::MATSommeCte(Type TCte)
     {
 		for (int iBoucle2 = 0; iBoucle2 < uiMATNombreColonne; iBoucle2++) 
         {
-			pTMATElement[iBoucle1][iBoucle2] += TCte;
+			ppTMATElement[iBoucle1][iBoucle2] += TCte;
 		}
 	}
 }
@@ -224,6 +224,24 @@ template <typename Type> CMatrice<Type> & CMatrice<Type>::MATProduitMatrice(CMat
 			for (unsigned int uiBoucle3 = 0; uiBoucle3 < uiMATNombreColonne; uiBoucle3++)
 			{
 				Tres += TMATLireElement(uiBoucle1, uiBoucle3) * MAT2.TMATLireElement(uiBoucle3, uiBoucle2);
+			}
+			MATResultat->MATModifierElement(uiBoucle1, uiBoucle2, Tres);
+		}
+	}
+	return *MATResultat;
+}
+
+template<typename Type> CMatrice<Type>& CMatrice<Type>::operator*(CMatrice <Type> &MATMatrice2) 
+{
+	CMatrice<Type> * MATResultat = new CMatrice( uiMATNombreColonne, uiMATNombreLigne); // création de la matrice à retourner
+	for (unsigned int uiBoucle1 = 0; uiBoucle1 < uiMATNombreLigne; uiBoucle1++) 
+	{
+		for (unsigned int uiBoucle2 = 0; uiBoucle2 < uiMATNombreColonne; uiBoucle2++) 
+		{
+			Type Tres = 0;
+			for (unsigned int uiBoucle3 = 0; uiBoucle3 < uiMATNombreColonne; uiBoucle3++)
+			{
+				Tres += TMATLireElement(uiBoucle1, uiBoucle3) * MATMatrice2.TMATLireElement(uiBoucle3, uiBoucle2);
 			}
 			MATResultat->MATModifierElement(uiBoucle1, uiBoucle2, Tres);
 		}

@@ -5,7 +5,6 @@ using namespace std;
 
 int main()
 {
-    //std::cout << "Hello World!\n";
     int nbLigne = 2;
     int nbColonne = 2;
     double E = 48.6;

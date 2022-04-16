@@ -14,14 +14,15 @@ private:
 
 public:
 	CMatrice();
-	CMatrice(int iNbLigne, int iNbColonne);
+	CMatrice(unsigned int iNbLigne, unsigned int iNbColonne);
+	CMatrice(CMatrice <Type> &MATMatrice);
 	~CMatrice();
 	
 	/** Acceseur **/
 	Type TMATLireElement(int iLigne, int iColonne) { return ppTMATElement[iLigne][iColonne]; }
 	int iMATGetNombreColonne() { return uiMATNombreColonne; };
 	int iMATGetNombreLigne() { return uiMATNombreLigne; };
-	void MATModifierElement(int iLigne, int iColonne, Type TElement);
+	void MATModifierElement(unsigned int iLigne, unsigned int iColonne, Type TElement);
 	void MATAfficherElement(int iLigne, int iColonne);
 	
 	/** Operation basic **/
@@ -38,13 +39,20 @@ public:
 	
 	/** Surcharge Operateur **/
 	CMatrice<Type> & operator=(CMatrice <Type> &MATMatrice2);
-	CMatrice<Type> & operator+(CMatrice <Type> &MATMatrice2);
-	CMatrice<Type> & operator-(CMatrice <Type> &MATMatrice2);
 	CMatrice<Type> & operator/(Type TCte);
 	CMatrice<Type> & operator*(Type TCte);
+	CMatrice<Type> & operator+(CMatrice <Type> &MATMatrice2);
+	CMatrice<Type> & operator-(CMatrice <Type> &MATMatrice2);
 	CMatrice<Type> & operator*(CMatrice <Type> &MATMatrice2);
 };
 
+/***
+** Constructeur par defaut
+** Entrée: CMatrice <Type>
+** PreCondition: rien
+** Sortie: rien
+** PostCondition: l'objet est initialiser
+***/
 template<typename Type> CMatrice<Type>::CMatrice()
 {
 	uiMATNombreLigne = 0;
@@ -53,10 +61,18 @@ template<typename Type> CMatrice<Type>::CMatrice()
 	ppTMATElement = nullptr;
 }
 
+/***
+** Destructeur
+** Entrée: CMatrice <Type>
+** PreCondition: rien
+** Sortie: rien
+** PostCondition: l'objet est detruit
+***/
 template<typename Type> CMatrice<Type>::~CMatrice()
 {
 	/*Désallocation mémoire*/
-	for (unsigned int uiBoucle = 0; uiBoucle < uiMATNombreLigne; uiBoucle++) {
+	for (unsigned int uiBoucle = 0; uiBoucle < uiMATNombreLigne; uiBoucle++) 
+	{
 		delete[] ppTMATElement[uiBoucle];
 	}
 	delete[] ppTMATElement;

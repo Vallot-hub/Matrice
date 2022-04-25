@@ -1,6 +1,6 @@
 #include <iostream>
 #include "CMatrice.h"
-
+//#include "CFichier.h"
 using namespace std;
 
 int main()
@@ -20,9 +20,13 @@ int main()
     }
     CMatrice Md1 = Md.MATProduitCte(-2.12);
     CMatrice Md2 = Md.MATTranspose();
-    CMatrice Md3 = Md * Md2;
+    CMatrice Md3 = Md + Md2;
     
     Md.MATAfficherMatrice();
-    Md1.MATAfficherMatrice();
+    cout << endl;
+    Md2.MATAfficherMatrice();
     Md3.MATAfficherMatrice();
+    
+    //CFichier F;
+    //F.CLireFichier('./CMatrice.h');
 }

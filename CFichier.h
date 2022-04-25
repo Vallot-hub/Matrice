@@ -13,10 +13,12 @@ public:
 
 CFichier::CFichier(/* args */)
 {
+
 }
 
 CFichier::~CFichier()
 {
+    
 }
 
 

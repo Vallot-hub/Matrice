@@ -14,36 +14,29 @@ private:
 
 public:
 	CMatrice();
-	CMatrice(unsigned int iNbLigne, unsigned int iNbColonne);
+	CMatrice(unsigned int uiNbLigne, unsigned int uiNbColonne);
 	CMatrice(CMatrice <Type> &MATMatrice);
 	~CMatrice();
 	
 	/** Acceseur **/
-	Type TMATLireElement(int iLigne, int iColonne) { return ppTMATElement[iLigne][iColonne]; }
-	int iMATGetNombreColonne() { return uiMATNombreColonne; };
-	int iMATGetNombreLigne() { return uiMATNombreLigne; };
+	Type TMATLireElement(unsigned int uiLigne,unsigned int uiColonne) { return ppTMATElement[uiLigne][uiColonne]; }
+	unsigned int uiMATGetNombreColonne() { return uiMATNombreColonne; };
+	unsigned int uiMATGetNombreLigne() { return uiMATNombreLigne; };
 	void MATModifierElement(unsigned int iLigne, unsigned int iColonne, Type TElement);
-	void MATAfficherElement(int iLigne, int iColonne);
 	
 	/** Operation basic **/
-	void MATSommeCte(Type TCte);
 	void MATAfficherMatrice();
-	CMatrice & MATProduitCte(Type TCte);
-	CMatrice & MATDivisionCte(Type TCte);
+	CMatrice<Type> operator/(Type TCte);
+	CMatrice<Type> operator*(Type TCte);
 
 	/** Operation "Avancer" **/
-	CMatrice & MATTranspose();
-	CMatrice & MATSomme(CMatrice MAT2);
-	CMatrice & MATDifference(CMatrice MAT2);
-	CMatrice & MATProduitMatrice(CMatrice MAT2);
+	CMatrice MATTranspose();
+	CMatrice<Type> operator+(CMatrice <Type> &MAT2);
+	CMatrice<Type> operator-(CMatrice <Type> &MAT2);
+	CMatrice<Type> operator*(CMatrice <Type> &MAT2);
 	
 	/** Surcharge Operateur **/
-	CMatrice<Type> & operator=(CMatrice <Type> &MATMatrice2);
-	CMatrice<Type> & operator/(Type TCte);
-	CMatrice<Type> & operator*(Type TCte);
-	CMatrice<Type> & operator+(CMatrice <Type> &MATMatrice2);
-	CMatrice<Type> & operator-(CMatrice <Type> &MATMatrice2);
-	CMatrice<Type> & operator*(CMatrice <Type> &MATMatrice2);
+	CMatrice<Type> operator=(CMatrice <Type> &MAT2);
 };
 
 /***

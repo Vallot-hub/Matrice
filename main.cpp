@@ -6,7 +6,7 @@ using namespace std;
 int main()
 {
     int nbLigne = 2;
-    int nbColonne = 2;
+    int nbColonne = 3;
     double E = 48.6;
     CMatrice<double> Md(nbLigne, nbColonne);
     
@@ -18,14 +18,23 @@ int main()
             E++;
         }
     }
-    CMatrice Md1 = Md.MATProduitCte(-2.12);
-    CMatrice Md2 = Md.MATTranspose();
-    CMatrice Md3 = Md + Md2;
+    try
+    {
+        CMatrice Md1 = Md * -5.2;
+        CMatrice Md2 = Md.MATTranspose();
+        CMatrice Md3 = Md + Md;
+        Md.MATAfficherMatrice();
+        cout << endl;
+        Md2.MATAfficherMatrice();
+        cout << endl;
+        cout << (Md + Md1).uiMATGetNombreColonne() << endl;
+        Md3.MATAfficherMatrice();
+    }
+    catch (CException e)
+    {
+        cout << e.iEXCGet();
+    }
     
-    Md.MATAfficherMatrice();
-    cout << endl;
-    Md2.MATAfficherMatrice();
-    Md3.MATAfficherMatrice();
     
     //CFichier F;
     //F.CLireFichier('./CMatrice.h');

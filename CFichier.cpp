@@ -5,7 +5,7 @@
 #include "CException.h"
 
 #define FichierTypeInvalide 101
-
+#define FichierNombreligneInvalide 102
 
 char CFichier::FICMinuscule(char cElement)
 {
@@ -36,6 +36,16 @@ char* CFichier::FICArretA(char* str, char separator)
     return str;
 }
 
+int CFichier::FICStrCompare(char* str1, char* str2)
+{
+    while (*str1 == *str2 && *str1 != '\0')
+    {
+        str1++;
+        str2++;
+        
+    }
+    return *str1 - *str2;
+}
 
 
 void CFichier::FICLireFichier(char* pcNomFichier)
@@ -47,8 +57,7 @@ void CFichier::FICLireFichier(char* pcNomFichier)
     char* pcReel = (char*)malloc(sizeof(char) * 50);    //!!!! A free;
     pcReel = FICSupprimerEspace(pcLigneFichier);
     cout << pcReel << endl;
-    cout << FICStrCompare(pcReel, (char*)"typematrice=double\0");
-    if (FICStrCompare(pcReel, (char*)"typematrice=double\0") != 0)
+    if (FICStrCompare(pcReel, (char*)"typematrice=double\r") != 0)
     {
         CException EXCError(FichierTypeInvalide);
         throw EXCError;
@@ -58,9 +67,10 @@ void CFichier::FICLireFichier(char* pcNomFichier)
     fichier.getline(pcLigneFichier, 49);
     char* pcNumeroLigne = (char*)malloc(sizeof(char) * 50);
     pcReel = FICSupprimerEspace(pcLigneFichier);
+    
     if (FICStrCompare(pcReel, (char*)"nombrelignes=") != 0)
     {
-        CException EXCError(FichierTypeInvalide);
+        CException EXCError(FichierNombreligneInvalide);
         throw EXCError;
     }
     pcNumeroLigne = FICSuivant(pcLigneFichier, '=');
@@ -113,14 +123,4 @@ char* CFichier::FICSupprimerEspace(char* pcstr)
     }
     pcChaineSansEspace[uiNouvelleChaine] = '\0';
     return pcChaineSansEspace;
-}
-
-int CFichier::FICStrCompare(char* str1, char* str2)
-{
-    while (*str1 == *str2 && *str1 != '\0')
-    {
-        str1++;
-        str2++;
-    }
-    return *str1 - *str2;
 }

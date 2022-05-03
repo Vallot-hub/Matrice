@@ -6,6 +6,7 @@
       ],
       "name": "x86-Debug",
       "includePath": [
+        "${workspaceRoot}",
         "${env.INCLUDE}",
         "${workspaceRoot}\\**"
       ],

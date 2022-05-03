@@ -21,9 +21,21 @@
     <ClCompile Include="CMatrice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CFichier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CMatrice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CFichier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,25 +1,21 @@
-#ifndef CFICHIER_H
-#define CFICHIER_H
+#ifndef CFICHIER
+#define CFICHIER
+
+using namespace std;
 
 class CFichier
 {
-private:
-    /* data */
 public:
-    CFichier(/* args */);
-    ~CFichier();
-    void CLireFichier(char* str);
+	/*CFichier();
+	~CFichier();*/
+	void FICLireFichier(char* pcNomFichier);
+
+private:
+    int FICStrCompare(char* str1, char* str2);
+    char* FICSupprimerEspace(char* str);
+    char* FICSuivant(char* str, char separator);
+    char* FICArretA(char* str, char separator);
+    char FICMinuscule(char cElement);
 };
-
-CFichier::CFichier(/* args */)
-{
-
-}
-
-CFichier::~CFichier()
-{
-    
-}
-
 
 #endif

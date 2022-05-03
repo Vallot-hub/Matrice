@@ -139,10 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CException.cpp" />
+    <ClCompile Include="CFichier.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CMatrice.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CException.h" />
+    <ClInclude Include="CFichier.h" />
     <ClInclude Include="CMatrice.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

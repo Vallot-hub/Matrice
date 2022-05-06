@@ -36,10 +36,18 @@ int main()
     {
         cout << e.iEXCGet();
     }
-    
+    cout << endl;
     
     CFichier F;
     //char* NomFile = (char*)malloc(85*sizeof(char));
-
-    F.FICLireFichier((char*)"./M1.txt");
+    try
+    {
+        CMatrice<double> Md4 = F.FICLireFichier((char*)"./M1.txt");
+        Md4.MATAfficherMatrice();
+    }
+    catch (CException e)
+    {
+        e.EXCAffiche();
+    }
+    
 }

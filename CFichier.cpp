@@ -1,11 +1,16 @@
-#include <fstream>
+﻿#include <fstream>
 #include <stdio.h>
 #include <iostream>
 #include "CFichier.h"
 #include "CException.h"
+#include "CMatrice.h"
 
+#define FichierIntrouvable 100
 #define FichierTypeInvalide 101
 #define FichierNombreligneInvalide 102
+#define FichierNombreColonneInvalide 103
+#define FichierLectureMatriceInvalide 104
+#define FichierFinInvalide 105
 
 char CFichier::FICMinuscule(char cElement)
 {
@@ -25,15 +30,24 @@ char* CFichier::FICSuivant(char* str, char separator)
     return ++str;
 }
 
-char* CFichier::FICArretA(char* str, char separator)
+char* CFichier::FICArretA(char* pcStr, char separator)
 {
     unsigned int uiboucle = 0;
-    while (str[uiboucle] != '\0' && str[uiboucle] != separator)
+    while (pcStr[uiboucle] != '\0' && pcStr[uiboucle] != separator)
     {
         uiboucle++;
     }
-    str[uiboucle + 1] = '\0';
-    return str;
+    char* pcNewStr = (char*)malloc(sizeof(char)*(uiboucle + 1));
+    uiboucle = 0;
+    
+    while (pcStr[uiboucle] != '\0' && pcStr[uiboucle] != separator)
+    {
+        pcNewStr[uiboucle] = pcStr[uiboucle];
+        uiboucle++;   
+    } 
+    pcNewStr[uiboucle] = pcStr[uiboucle];
+    pcNewStr[uiboucle + 1] = '\0';
+    return pcNewStr;
 }
 
 int CFichier::FICStrCompare(char* str1, char* str2)
@@ -41,78 +55,170 @@ int CFichier::FICStrCompare(char* str1, char* str2)
     while (*str1 == *str2 && *str1 != '\0')
     {
         str1++;
-        str2++;
-        
+        str2++;   
     }
     return *str1 - *str2;
 }
 
 
-void CFichier::FICLireFichier(char* pcNomFichier)
+CMatrice<double> CFichier::FICLireFichier(char* pcNomFichier)
 {
     //cout << *pcNomFichier;
     char* pcLigneFichier = (char*)malloc(sizeof(char) * 50);
     ifstream fichier(pcNomFichier, ios::in);
     fichier.getline(pcLigneFichier, 49);
-    char* pcReel = (char*)malloc(sizeof(char) * 50);    //!!!! A free;
+    char* pcReel;    //!!!! A free;
     pcReel = FICSupprimerEspace(pcLigneFichier);
-    cout << pcReel << endl;
-    if (FICStrCompare(pcReel, (char*)"typematrice=double\r") != 0)
+    //cout << pcReel << endl;
+    if (FICStrCompare(pcReel, (char*)"typematrice=double") != 0)
     {
         CException EXCError(FichierTypeInvalide);
-        throw EXCError;
+        //throw EXCError;
     }
+    free(pcLigneFichier);
+    free(pcReel);
 
     /** Lecture du Nombre de ligne **/
+    pcLigneFichier = (char*)malloc(sizeof(char) * 50);
     fichier.getline(pcLigneFichier, 49);
-    char* pcNumeroLigne = (char*)malloc(sizeof(char) * 50);
     pcReel = FICSupprimerEspace(pcLigneFichier);
-    
-    if (FICStrCompare(pcReel, (char*)"nombrelignes=") != 0)
+    char* pcPrefix = FICArretA(pcReel, '=');
+    if (FICStrCompare(pcPrefix, (char*)"nombrelignes=") != 0)
     {
         CException EXCError(FichierNombreligneInvalide);
         throw EXCError;
     }
-    pcNumeroLigne = FICSuivant(pcLigneFichier, '=');
+
+    char* pcNumeroLigne;
+    pcNumeroLigne = FICSuivant(pcReel, '=');
     unsigned int uiNombreLigne = atoi(pcNumeroLigne);
-    cout << pcReel << endl;
+    //cout << pcReel << endl;
+    free(pcLigneFichier);
+    free(pcReel);
+    free(pcPrefix);
+
+
 
     /** Lecture du Nombre de Colonne **/
+    pcLigneFichier = (char*)malloc(sizeof(char) * 50);
     fichier.getline(pcLigneFichier, 49);
-    char* pcNumeroColonne = (char*)malloc(sizeof(char) * 50);
     pcReel = FICSupprimerEspace(pcLigneFichier);
+    pcPrefix = FICArretA(pcReel, '=');
+    //cout << pcPrefix << endl;
+    if (FICStrCompare(pcPrefix, (char*)"nombrecolonnes=") != 0)
+    {
+        CException EXCError(FichierNombreColonneInvalide);
+        throw EXCError;
+    }
+    char* pcNumeroColonne;
     pcNumeroColonne = FICSuivant(pcLigneFichier, '=');
     unsigned int uiNombreColonne = atoi(pcNumeroColonne);
-    cout << pcReel << endl;
+    //cout << pcReel << endl;
+    free(pcReel);
+    free(pcPrefix);
+    free(pcLigneFichier);
 
-    //cout << pcLigneFichier << endl;
+    /** Lecture de la ligne suivante: Matrice=[ **/
+    pcLigneFichier = (char*)malloc(sizeof(char) * 50);
     fichier.getline(pcLigneFichier, 49);
-    cout << pcLigneFichier << endl;
-    cout << "Nombre de ligne : " << uiNombreLigne << endl;
-    cout << "Nombre de colonne : " << uiNombreColonne << endl;
+    pcReel = FICSupprimerEspace(pcLigneFichier);
+    //cout << pcReel << endl;
+    if (FICStrCompare(pcReel, (char*)"matrice=[") != 0)
+    {
+        CException EXCError(FichierLectureMatriceInvalide);
+        throw EXCError;
+    }
+    free(pcLigneFichier);
+    free(pcReel);
+    
+    pcLigneFichier = (char*)malloc(sizeof(char) * 50);
+    CMatrice<double> MATResultat = CMatrice<double>(uiNombreLigne, uiNombreColonne);
+    unsigned int uiBoucle1 = 0;
+    char pcValeur[21];
+    while (uiBoucle1 < uiNombreLigne)
+    {
+        pcLigneFichier = (char*)malloc(sizeof(char) * 50);
+        fichier.getline(pcLigneFichier, 49);
+        char* pcReel;
+        if (pcLigneFichier[0] == ' ')
+        {
+            pcReel = FICSuivant(pcLigneFichier, ' ');
+        }
+        else
+        {
+            pcReel = pcLigneFichier;
+        }
+        unsigned int uiBoucle2 = 0;
+        unsigned int uiNombreCarctere = 0;
+        unsigned int uiPosition_y = 0;
+
+        while (pcReel[uiBoucle2] != '\0')
+        {
+            if (pcReel[uiBoucle2] != ' ')
+            {
+                pcValeur[uiNombreCarctere] = pcReel[uiBoucle2];
+                if (pcReel[uiBoucle2 + 1] == '\0')
+                {
+                    pcValeur[uiNombreCarctere + 1] = '\0';
+                    //cout << uiBoucle1 << " " << uiPosition_y << " " << pcValeur << endl; 
+                    MATResultat.MATModifierElement(uiBoucle1, uiPosition_y, atof(pcValeur));
+                    uiPosition_y++;
+                }
+                uiNombreCarctere++;
+            }
+            else
+            {
+                pcValeur[uiNombreCarctere] = '\0';
+                uiNombreCarctere = 0;
+                //cout << uiBoucle1 << " " << uiPosition_y << " " << pcValeur << endl;
+                MATResultat.MATModifierElement(uiBoucle1, uiPosition_y, atof(pcValeur));
+                uiPosition_y++;
+            }
+            uiBoucle2++;
+            //cout << uiBoucle1 << " " << uiBoucle2 << " " << pcValeur << endl;
+        }
+        uiBoucle1++;
+        free(pcLigneFichier);
+    }
+    
+
+    pcLigneFichier = (char*)malloc(sizeof(char) * 50);
+    fichier.getline(pcLigneFichier, 49);
+    pcReel = FICSupprimerEspace(pcLigneFichier);
+    //cout << pcReel << endl;
+    if (FICStrCompare(pcReel, (char*)"]") != 0)
+    {
+        CException EXCError(FichierFinInvalide);
+        throw EXCError;
+    }
+    free(pcLigneFichier);
+    free(pcReel);
+    return MATResultat;
 }
 
-char* CFichier::FICSupprimerEspace(char* pcstr)
+char* CFichier::FICSupprimerEspace(char* pcStr)
 {
     unsigned int uiTailleSansEspace = 0;
     unsigned int uiboucle = 0;
-    while (pcstr[uiboucle] != '\0')
+    while (pcStr[uiboucle] != '\0')
     {
-        if (pcstr[uiboucle] != ' ')
+        if (pcStr[uiboucle] != ' ')
         {
             uiTailleSansEspace++;
         }
         uiboucle++;
     }
-    char* pcChaineSansEspace = (char*)malloc(sizeof(char) * uiTailleSansEspace);
+    //cout << uiTailleSansEspace << endl;
+    //cout << uiboucle << endl;
+    char* pcChaineSansEspace = (char*)malloc(sizeof(char) * (uiTailleSansEspace+1));
 
     unsigned int uiChaineBase = 0;
     unsigned int uiNouvelleChaine = 0;
-    while (pcstr[uiChaineBase] != '\0')
+    while (pcStr[uiChaineBase] != '\0')
     {
-        if (pcstr[uiChaineBase] != ' ')
+        if (pcStr[uiChaineBase] != ' ')
         {
-            pcChaineSansEspace[uiNouvelleChaine] = FICMinuscule(pcstr[uiChaineBase]);
+            pcChaineSansEspace[uiNouvelleChaine] = FICMinuscule(pcStr[uiChaineBase]);
             uiChaineBase++;
             uiNouvelleChaine++;
         }

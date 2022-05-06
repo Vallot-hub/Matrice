@@ -1,14 +1,16 @@
 #ifndef CFICHIER
 #define CFICHIER
+#include "CMatrice.h"
 
 using namespace std;
+
 
 class CFichier
 {
 public:
 	/*CFichier();
 	~CFichier();*/
-	void FICLireFichier(char* pcNomFichier);
+	CMatrice<double> FICLireFichier(char* pcNomFichier);
 
 private:
     int FICStrCompare(char* str1, char* str2);

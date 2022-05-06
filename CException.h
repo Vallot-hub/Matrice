@@ -1,9 +1,6 @@
 #ifndef CEXCEPTION_H
 #define CEXCEPTION_H
 
-#define Fichier_introuvable 100
-#define valeur_deja_presente 200
-
 class CException
 {
 private:
@@ -15,7 +12,9 @@ public:
     //~CException();
     int iEXCGet() { return iEXCValeur; }
     void EXCSet ( int iparam ) { iEXCValeur = iparam; }
+    void EXCAffiche();
 };
+
 
 
 /*CException::CException()

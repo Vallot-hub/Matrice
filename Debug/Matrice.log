@@ -1,7 +1,0 @@
-﻿  CFichier.cpp
-Z:\C++\Matrice\CFichier.cpp(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  CMatrice.cpp
-  Generating Code...
-main.obj : error LNK2005: "public: __thiscall CFichier::CFichier(void)" (??0CFichier@@QAE@XZ) already defined in CFichier.obj
-main.obj : error LNK2005: "public: __thiscall CFichier::~CFichier(void)" (??1CFichier@@QAE@XZ) already defined in CFichier.obj
-Z:\C++\Matrice\Debug\Matrice.exe : fatal error LNK1169: one or more multiply defined symbols found

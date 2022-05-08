@@ -1,8 +1,0 @@
-TypeMatrice=double
-NombreLignes=10
-NombreColonnes=10
-Matrice=[
-	1 2 3 
-	1 2 3 
-	1 2 3 
-]

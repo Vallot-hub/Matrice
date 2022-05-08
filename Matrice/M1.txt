@@ -1,0 +1,8 @@
+TypeMatrice=double
+NombreLignes=3
+NombreColonnes=3
+Matrice=[
+	1 2 3 
+	1 2 3 
+	1 2 3 
+]

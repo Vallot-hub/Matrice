@@ -10,8 +10,17 @@
 #define FichierNombreligneInvalide 102
 #define FichierNombreColonneInvalide 103
 #define FichierLectureMatriceInvalide 104
-#define FichierFinInvalide 105
+#define FichierNombreColonneIncoherent 105
+#define FichierFinInvalide 106
 
+
+/***
+** convertie un caractere en minuscule
+** Entrée: caractere
+** PreCondition: rien
+** Sortie: caractere
+** PostCondition: caractere en minuscule
+***/
 char CFichier::FICMinuscule(char cElement)
 {
     if (cElement >= 'A' && cElement <= 'Z')
@@ -21,6 +30,13 @@ char CFichier::FICMinuscule(char cElement)
     return cElement;
 }
 
+/***
+** recupere le suffix
+** Entrée: chaine de caracter, caractere separateur
+** PreCondition: fin de caractere: '\0'
+** Sortie: pointeur de caractere
+** PostCondition: pointeur vers le caractere aprés la premiere occurence de separator
+***/
 char* CFichier::FICSuivant(char* str, char separator)
 {
     while (*str != '\0' && *str != separator)
@@ -30,6 +46,13 @@ char* CFichier::FICSuivant(char* str, char separator)
     return ++str;
 }
 
+/***
+** recupere le prefix avant separator
+** Entrée: chaine de caracter, caractere separateur
+** PreCondition: fin de caractere: '\0'
+** Sortie: nouvelle chaine de caractere allouer sur le tas
+** PostCondition: chaine retourné ne contient que le prefix
+***/
 char* CFichier::FICArretA(char* pcStr, char separator)
 {
     unsigned int uiboucle = 0;
@@ -37,7 +60,7 @@ char* CFichier::FICArretA(char* pcStr, char separator)
     {
         uiboucle++;
     }
-    char* pcNewStr = (char*)malloc(sizeof(char)*(uiboucle + 1));
+    char* pcNewStr = (char*)malloc(sizeof(char)*(uiboucle + 2));
     uiboucle = 0;
     
     while (pcStr[uiboucle] != '\0' && pcStr[uiboucle] != separator)
@@ -50,22 +73,40 @@ char* CFichier::FICArretA(char* pcStr, char separator)
     return pcNewStr;
 }
 
-int CFichier::FICStrCompare(char* str1, char* str2)
+/***
+** Compare deux chaine de caractere
+** Entrée: deux chaine de caractere
+** PreCondition: fin de caractere: '\0' 
+** Sortie: entier
+** PostCondition: 0 si chaine sont egale autre entier si chaine differente
+***/
+int CFichier::FICStrCompare(char* pcStr1, char* pcStr2)
 {
-    while (*str1 == *str2 && *str1 != '\0')
+    while (*pcStr1 == *pcStr2 && *pcStr1 != '\0')
     {
-        str1++;
-        str2++;   
+        pcStr1++;
+        pcStr2++;   
     }
-    return *str1 - *str2;
+    return *pcStr1 - *pcStr2;
 }
 
-
+/***
+** Lit un fichier et si possible initialise une matrice
+** Entrée: nom du fichier
+** PreCondition: fin de caractere: '\0'
+** Sortie: matrice 
+** PostCondition: 
+***/
 CMatrice<double> CFichier::FICLireFichier(char* pcNomFichier)
 {
     //cout << *pcNomFichier;
     char* pcLigneFichier = (char*)malloc(sizeof(char) * 50);
     ifstream fichier(pcNomFichier, ios::in);
+    if (!fichier)
+    {
+        CException EXCError(FichierIntrouvable);
+        throw EXCError;
+    }
     fichier.getline(pcLigneFichier, 49);
     char* pcReel;    //!!!! A free;
     pcReel = FICSupprimerEspace(pcLigneFichier);
@@ -73,7 +114,7 @@ CMatrice<double> CFichier::FICLireFichier(char* pcNomFichier)
     if (FICStrCompare(pcReel, (char*)"typematrice=double") != 0)
     {
         CException EXCError(FichierTypeInvalide);
-        //throw EXCError;
+        throw EXCError;
     }
     free(pcLigneFichier);
     free(pcReel);
@@ -88,7 +129,6 @@ CMatrice<double> CFichier::FICLireFichier(char* pcNomFichier)
         CException EXCError(FichierNombreligneInvalide);
         throw EXCError;
     }
-
     char* pcNumeroLigne;
     pcNumeroLigne = FICSuivant(pcReel, '=');
     unsigned int uiNombreLigne = atoi(pcNumeroLigne);
@@ -131,7 +171,7 @@ CMatrice<double> CFichier::FICLireFichier(char* pcNomFichier)
     free(pcLigneFichier);
     free(pcReel);
     
-    pcLigneFichier = (char*)malloc(sizeof(char) * 50);
+
     CMatrice<double> MATResultat = CMatrice<double>(uiNombreLigne, uiNombreColonne);
     unsigned int uiBoucle1 = 0;
     char pcValeur[21];
@@ -161,7 +201,15 @@ CMatrice<double> CFichier::FICLireFichier(char* pcNomFichier)
                 {
                     pcValeur[uiNombreCarctere + 1] = '\0';
                     //cout << uiBoucle1 << " " << uiPosition_y << " " << pcValeur << endl; 
-                    MATResultat.MATModifierElement(uiBoucle1, uiPosition_y, atof(pcValeur));
+                    if (uiPosition_y < uiNombreColonne)
+                    {
+                        MATResultat.MATModifierElement(uiBoucle1, uiPosition_y, atof(pcValeur));
+                    }
+                    else
+                    {
+                        CException EXCError(FichierNombreColonneIncoherent);
+                        throw EXCError;
+                    }
                     uiPosition_y++;
                 }
                 uiNombreCarctere++;
@@ -171,7 +219,16 @@ CMatrice<double> CFichier::FICLireFichier(char* pcNomFichier)
                 pcValeur[uiNombreCarctere] = '\0';
                 uiNombreCarctere = 0;
                 //cout << uiBoucle1 << " " << uiPosition_y << " " << pcValeur << endl;
-                MATResultat.MATModifierElement(uiBoucle1, uiPosition_y, atof(pcValeur));
+                if (uiPosition_y < uiNombreColonne)
+                {
+                    MATResultat.MATModifierElement(uiBoucle1, uiPosition_y, atof(pcValeur));
+                }
+                else
+                {
+                    CException EXCError(FichierNombreColonneIncoherent);
+                    throw EXCError;
+                }
+                
                 uiPosition_y++;
             }
             uiBoucle2++;
@@ -196,6 +253,13 @@ CMatrice<double> CFichier::FICLireFichier(char* pcNomFichier)
     return MATResultat;
 }
 
+/***
+** Supprime les espaces d'une chaine de caracters
+** Entrée: chaine de caractere
+** PreCondition: fin de caractere: '\0'
+** Sortie: chaine caractere allouee sur le tas
+** PostCondition: La chaine de sortie est sans espace
+***/
 char* CFichier::FICSupprimerEspace(char* pcStr)
 {
     unsigned int uiTailleSansEspace = 0;
@@ -210,7 +274,7 @@ char* CFichier::FICSupprimerEspace(char* pcStr)
     }
     //cout << uiTailleSansEspace << endl;
     //cout << uiboucle << endl;
-    char* pcChaineSansEspace = (char*)malloc(sizeof(char) * (uiTailleSansEspace+1));
+    char* pcChaineSansEspace = (char*)malloc(sizeof(char) * (uiTailleSansEspace + 1));
 
     unsigned int uiChaineBase = 0;
     unsigned int uiNouvelleChaine = 0;

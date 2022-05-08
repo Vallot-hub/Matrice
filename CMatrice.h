@@ -4,8 +4,13 @@
 #include <iostream>
 #include "CException.h"
 
-#define DivisionParZero 1
-#define DimentionIncoherente 2
+#define DivisionParZero 201
+#define DimentionIncoherenteCreation 202
+#define DimentionIncoherenteModifierElement 203
+#define DimentionIncoherenteLireElement 204
+#define DimentionIncoherenteSommmeMatrice 205
+#define DimentionIncoherenteDifferenceMatrice 206
+#define DimentionIncoherenteProduitMatrice 207
 
 using namespace std;
 
@@ -23,7 +28,7 @@ public:
 	~CMatrice();
 	
 	/** Acceseur **/
-	Type TMATLireElement(unsigned int uiLigne,unsigned int uiColonne)const { return ppTMATElement[uiLigne][uiColonne]; }
+	Type TMATLireElement(unsigned int uiLigne, unsigned int uiColonne)const;
 	unsigned int uiMATGetNombreColonne()const { return uiMATNombreColonne; };
 	unsigned int uiMATGetNombreLigne()const { return uiMATNombreLigne; };
 	void MATModifierElement(unsigned int iLigne, unsigned int iColonne, Type TElement);
@@ -76,7 +81,30 @@ template<typename Type> CMatrice<Type>::~CMatrice()
 	delete[] ppTMATElement;
 }
 
-//#include "CMatrice.cpp"  //suite des definitions des methodes de la template
+/***
+** Constructeur de confort
+** Entrée: uiNbLigne, nombre de lignes de la matrice || uiNbColonne, le nombre de colonnes de la matrice
+** PreCondition: rien
+** Sortie: rien
+** PostCondition: l'objet est initialiser à partir d'un autre CMatrice<T>
+***/
+template<typename Type> CMatrice<Type>::CMatrice(unsigned int uiNbLigne, unsigned int uiNbColonne)
+{
+	if (uiNbColonne < 0 || uiNbLigne < 0)
+	{
+		CException EXCError(DimentionIncoherenteCreation);
+		throw EXCError;
+	}
+	
+	uiMATNombreColonne = uiNbColonne;
+	uiMATNombreLigne = uiNbLigne;
+
+	ppTMATElement = new Type * [uiNbLigne];
+	for (unsigned int uiBoucle = 0; uiBoucle < uiNbLigne; uiBoucle++)
+	{
+		ppTMATElement[uiBoucle] = new Type[uiNbColonne];
+	}
+}
 
 /***
 ** Constructeur de recopie
@@ -108,16 +136,26 @@ template<typename Type> CMatrice<Type>::CMatrice(const CMatrice <Type> &MATMatri
 	}
 }
 
+template<typename Type> inline Type CMatrice<Type>::TMATLireElement(unsigned int uiLigne, unsigned int uiColonne)const
+{ 
+	if (uiLigne > uiMATNombreColonne || uiColonne > uiMATNombreColonne)
+	{
+		CException EXCError(DimentionIncoherenteLireElement);
+		throw EXCError;
+	}
+	return ppTMATElement[uiLigne][uiColonne]; 
+}
 /*** recopie par operateur
 ** Entrée: CMatrice
 ** PreCondition: un objet initialisé
 ** Sortie: Rien
 ** PostCondition: l'objet crée est une copie de l'objet d'entrée
 ***/
-template<typename Type> CMatrice<Type> CMatrice<Type>::operator=(CMatrice <Type> MATMatrice2) {
-
+template<typename Type> CMatrice<Type> CMatrice<Type>::operator=(CMatrice <Type> MATMatrice2) 
+{
+	
 	/*Si les deux matrices sont de taille différente*/
-	if ((uiMATNombreLigne != MATMatrice2.uiMATLireNbLigne()) || (uiMATNombreLigne != MATMatrice2.uiMATLireNbColonne())) 
+	if ((uiMATGetNombreLigne() != MATMatrice2.uiMATGetNombreLigne()) || (uiMATGetNombreColonne() != MATMatrice2.uiMATGetNombreColonne()))
 	{
 		/*Libération mémoire*/
 		for (unsigned int uiBoucleAlloc = 0; uiBoucleAlloc < uiMATNombreLigne; uiBoucleAlloc++) 
@@ -127,8 +165,8 @@ template<typename Type> CMatrice<Type> CMatrice<Type>::operator=(CMatrice <Type>
 		delete[] ppTMATElement;
 
 		/*Nouvelle affectation de valeur*/
-		uiMATNombreLigne = MATMatrice2.uiMATLireNbLigne();
-		uiMATNombreColonne = MATMatrice2.uiMATLireNbColonne();
+		uiMATNombreLigne = MATMatrice2.uiMATGetNombreLigne();
+		uiMATNombreColonne = MATMatrice2.uiMATGetNombreColonne();
 
 		/*Nouvelle allocation de la mémoire*/
 		ppTMATElement = new Type*[uiMATNombreLigne];
@@ -143,7 +181,7 @@ template<typename Type> CMatrice<Type> CMatrice<Type>::operator=(CMatrice <Type>
 	{
 		for (unsigned int uiBoucle2 = 0; uiBoucle2 < uiMATNombreColonne; uiBoucle2++) 
 		{
-			MATModifierElement(uiBoucle1, uiBoucle2, MATMatrice2.MATLireElement(uiBoucle1, uiBoucle2));
+			MATModifierElement(uiBoucle1, uiBoucle2, MATMatrice2.TMATLireElement(uiBoucle1, uiBoucle2));
 		}
 	}
 	return *this;
@@ -160,29 +198,10 @@ template<typename Type> void CMatrice<Type>::MATModifierElement(unsigned int uiL
 {
     if ( uiColonne > uiMATNombreColonne || uiColonne > uiMATNombreLigne )
 	{
-		CException EXCError(DimentionIncoherente);
+		CException EXCError(DimentionIncoherenteModifierElement);
 		throw EXCError;
 	}
 	ppTMATElement[uiLigne][uiColonne] = TElement;
-}
-
-/***
-** Constructeur de confort
-** Entrée: uiNbLigne, nombre de lignes de la matrice || uiNbColonne, le nombre de colonnes de la matrice
-** PreCondition: rien
-** Sortie: rien
-** PostCondition: l'objet est initialiser à partir d'un autre CMatrice<T>
-***/
-template<typename Type> CMatrice<Type>::CMatrice(unsigned int uiNbLigne, unsigned int uiNbColonne)
-{
-    uiMATNombreColonne = uiNbColonne;
-    uiMATNombreLigne = uiNbLigne;
-
-    ppTMATElement = new Type*[uiNbLigne];
-    for (unsigned int uiBoucle = 0; uiBoucle < uiNbLigne; uiBoucle++)
-    {
-        ppTMATElement[uiBoucle] = new Type[uiNbColonne];
-    }
 }
 
 /***
@@ -246,7 +265,7 @@ template<typename Type> CMatrice<Type> CMatrice<Type>::operator/(Type TCte)
     {
 		for (unsigned int uiBoucle2 = 0; uiBoucle2 < uiMATNombreColonne; uiBoucle2++) 
         {
-			MATResultat->MATModifierElement(uiBoucle1, uiBoucle2, TMATLireElement(uiBoucle1, uiBoucle2) / TCte);
+			MATResultat.MATModifierElement(uiBoucle1, uiBoucle2, TMATLireElement(uiBoucle1, uiBoucle2) / TCte);
 		}
 	}
 	return MATResultat;
@@ -284,7 +303,7 @@ template<typename Type> CMatrice<Type> CMatrice<Type>::operator+(CMatrice <Type>
 {
 	if ( uiMATNombreColonne != MAT2.uiMATGetNombreColonne() || uiMATNombreLigne != MAT2.uiMATGetNombreLigne() )
 	{
-		CException EXCError(DimentionIncoherente);
+		CException EXCError(DimentionIncoherenteSommmeMatrice);
 		throw EXCError;
 	}
 	CMatrice<Type> MATResultat = CMatrice( uiMATNombreLigne, uiMATNombreColonne ); // création de la matrice à retourner
@@ -310,17 +329,17 @@ template<typename Type> CMatrice<Type> CMatrice<Type>::operator+(CMatrice <Type>
 ***/
 template<typename Type> CMatrice<Type> CMatrice<Type>::operator-(CMatrice <Type> &MAT2) 
 {
-	if ( uiMATNombreColonne != MAT2.uiMATNombreColonne() || uiMATNombreLigne != MAT2.uiMATGetNombreLigne() )
+	if (uiMATNombreColonne != MAT2.uiMATGetNombreColonne() || uiMATNombreLigne != MAT2.uiMATGetNombreLigne())
 	{
-		CException EXCError(DimentionIncoherente);
+		CException EXCError(DimentionIncoherenteDifferenceMatrice);
 		throw EXCError;
 	}
-	CMatrice<Type> * MATResultat = new CMatrice( uiMATNombreColonne, uiMATNombreLigne); // création de la matrice à retourner
+	CMatrice<Type> MATResultat = CMatrice( uiMATNombreColonne, uiMATNombreLigne); // création de la matrice à retourner
 	for (unsigned int uiBoucle1 = 0; uiBoucle1 < uiMATNombreLigne; uiBoucle1++) 
 	{
 		for (unsigned int uiBoucle2 = 0; uiBoucle2 < uiMATNombreColonne; uiBoucle2++) 
 		{
-			MATResultat->MATModifierElement(uiBoucle1, uiBoucle2, TMATLireElement(uiBoucle1, uiBoucle2) - MAT2.TMATLireElement(uiBoucle1, uiBoucle2));
+			MATResultat.MATModifierElement(uiBoucle1, uiBoucle2, TMATLireElement(uiBoucle1, uiBoucle2) - MAT2.TMATLireElement(uiBoucle1, uiBoucle2));
 		}
 	}
 	return MATResultat;
@@ -335,22 +354,22 @@ template<typename Type> CMatrice<Type> CMatrice<Type>::operator-(CMatrice <Type>
 ***/
 template<typename Type> CMatrice<Type> CMatrice<Type>::operator*(CMatrice <Type> &MAT2) 
 {
-	if ( uiMATGetNombreColonne() != MAT2.uiMATNombreColonne() || uiMATGetNombreLigne() != MAT2.uiMATGetNombreLigne() )
+	if ( uiMATGetNombreColonne() != MAT2.uiMATGetNombreColonne() || uiMATGetNombreLigne() != MAT2.uiMATGetNombreLigne() )
 	{
-		CException EXCError(DimentionIncoherente);
+		CException EXCError(DimentionIncoherenteProduitMatrice);
 		throw EXCError;
 	}
-	CMatrice<Type> * MATResultat = new CMatrice( uiMATNombreColonne, uiMATNombreLigne); // création de la matrice à retourner
-	for (unsigned int uiBoucle1 = 0; uiBoucle1 < uiMATNombreLigne; uiBoucle1++) 
+	CMatrice<Type> MATResultat = CMatrice(uiMATGetNombreColonne(), uiMATGetNombreLigne()); // création de la matrice à retourner
+	for (unsigned int uiBoucle1 = 0; uiBoucle1 < uiMATGetNombreLigne(); uiBoucle1++)
 	{
-		for (unsigned int uiBoucle2 = 0; uiBoucle2 < uiMATNombreColonne; uiBoucle2++) 
+		for (unsigned int uiBoucle2 = 0; uiBoucle2 < uiMATGetNombreColonne(); uiBoucle2++)
 		{
 			Type Tres = 0;
-			for (unsigned int uiBoucle3 = 0; uiBoucle3 < uiMATNombreColonne; uiBoucle3++)
+			for (unsigned int uiBoucle3 = 0; uiBoucle3 < uiMATGetNombreColonne(); uiBoucle3++)
 			{
 				Tres += TMATLireElement(uiBoucle1, uiBoucle3) * MAT2.TMATLireElement(uiBoucle3, uiBoucle2);
 			}
-			MATResultat->MATModifierElement(uiBoucle1, uiBoucle2, Tres);
+			MATResultat.MATModifierElement(uiBoucle1, uiBoucle2, Tres);
 		}
 	}
 	return MATResultat;

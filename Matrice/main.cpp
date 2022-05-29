@@ -7,7 +7,37 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     cout << "debut du programme" << endl;
-    if (argc > 1)
+    int tab[4] = {1,2,3,4};
+
+    CMatrice<int> Mat;
+    CMatrice<int> Mat2(3,4);
+
+    Mat2.MATModifierElement(0,0,2);
+    Mat2.MATModifierElement(0,1,4);
+    Mat2.MATModifierElement(0,2,3);
+    Mat2.MATModifierElement(0,3,1);
+
+    Mat2.MATModifierElement(1,0,1);
+    Mat2.MATModifierElement(1,1,5);
+    Mat2.MATModifierElement(1,2,2);
+    Mat2.MATModifierElement(1,3,3);
+
+    Mat2.MATModifierElement(2,0,2);
+    Mat2.MATModifierElement(2,1,3);
+    Mat2.MATModifierElement(2,2,7);
+    Mat2.MATModifierElement(2,3,1);
+    
+    unsigned int Tab1[3]={0,1,3};
+
+
+
+    Mat = Mat.MATPermutation(tab, 4);
+    Mat.MATAfficherMatrice();
+    cout << "" << endl;
+    Mat = Mat2.MATPermutationVecteur(Tab1);
+    Mat.MATAfficherMatrice();
+
+    /*if (argc > 1)
     {
         CMatrice<double>* MATtabMatrice = new CMatrice<double>[argc - 1];
         CFichier FICFichier;
@@ -109,51 +139,8 @@ int main(int argc, char *argv[])
             }
         }
         MATresultat.MATAfficherMatrice();
-    }
+
+    }*/
+    cout << "fin du programme" << endl;
 }
 
-void test(){
-    int nbLigne = 2;
-    int nbColonne = 3;
-    double E = 48.6;
-    CMatrice<double> Md(nbLigne, nbColonne);
-    CMatrice<double> Md1(nbLigne, nbColonne);
-    for (int i = 0; i < nbLigne; i++)
-    {
-        for (int j = 0; j < nbColonne; j++)
-        {
-            Md.MATModifierElement(i,j,E);
-            Md1.MATModifierElement(i, j, E + 5);
-            E++;
-        }
-    }
-    try
-    {
-        Md * -5.2;
-
-        CMatrice<double> Md2 = Md.MATTranspose();
-        CMatrice<double> Md3 = Md1;
-        Md.MATAfficherMatrice();
-        cout << endl;
-        Md2.MATAfficherMatrice();
-        cout << endl;
-        Md3.MATAfficherMatrice();
-    }
-    catch (CException e)
-    {
-        cout << e.iEXCGet();
-    }
-    cout << endl;
-
-    CFichier F;
-    //char* NomFile = (char*)malloc(85*sizeof(char));
-    try
-    {
-        CMatrice<double> Md4 = F.FICLireFichier((char*)"./M2.txt");
-        Md4.MATAfficherMatrice();
-    }
-    catch (CException e)
-    {
-        e.EXCAffiche();
-    }
-}

@@ -32,7 +32,9 @@ public:
 	unsigned int uiMATGetNombreColonne()const { return uiMATNombreColonne; };
 	unsigned int uiMATGetNombreLigne()const { return uiMATNombreLigne; };
 	void MATModifierElement(unsigned int iLigne, unsigned int iColonne, Type TElement);
-	
+	CMatrice<Type> MATPermutation(Type *pTTab, unsigned int Taille);
+	CMatrice<Type> MATPermutationVecteur(unsigned int uiTab[uiMATGetNombreLigne()]);
+
 	/** Operation basic **/
 	void MATAfficherMatrice();
 	CMatrice<Type> operator/(Type TCte);
@@ -43,6 +45,7 @@ public:
 	CMatrice<Type> operator+(CMatrice <Type> &MAT2);
 	CMatrice<Type> operator-(CMatrice <Type> &MAT2);
 	CMatrice<Type> operator*(CMatrice <Type> &MAT2);
+	
 	
 	/** Surcharge Operateur **/
 	CMatrice<Type> operator=(CMatrice <Type> MAT2);
@@ -374,4 +377,50 @@ template<typename Type> CMatrice<Type> CMatrice<Type>::operator*(CMatrice <Type>
 	}
 	return MATResultat;
 }
+
+template<typename Type> CMatrice<Type> CMatrice<Type>::MATPermutation(Type *puiTab, unsigned int Taille)
+{
+	CMatrice<Type> MATResultat = CMatrice(Taille, Taille); 
+	for (unsigned int uiBoucle1 = 0; uiBoucle1 < Taille; uiBoucle1++)
+	{
+		for (unsigned int uiBoucle2 = 0; uiBoucle2 < Taille; uiBoucle2++)
+		{
+			Type ValeurAjoute;
+			if((int)(uiBoucle2 - uiBoucle1) >= 0)
+			{
+				ValeurAjoute = puiTab[uiBoucle2 - uiBoucle1];
+			}
+			else
+			{
+				ValeurAjoute = puiTab[uiBoucle2 - uiBoucle1 + Taille];
+			}
+			MATResultat.MATModifierElement(uiBoucle1, uiBoucle2, ValeurAjoute);
+		}
+	}
+	return MATResultat;
+}
+
+template<typename Type> CMatrice<Type> CMatrice<Type>::MATPermutationVecteur(unsigned int uiTab[uiMATGetNombreLigne()])
+{
+	CMatrice<Type> MATResultat = CMatrice(uiMATGetNombreLigne(), uiMATGetNombreColonne()); 
+	for (unsigned int uiBoucle1 = 0; uiBoucle1 < uiMATGetNombreLigne(); uiBoucle1++)
+	{
+		for (unsigned int uiBoucle2 = 0; uiBoucle2 < uiMATGetNombreColonne(); uiBoucle2++)
+		{
+			Type ValeurAjoute;
+			if((int)(uiBoucle2 - uiTab[uiBoucle1]) >= 0)
+			{
+				ValeurAjoute = TMATLireElement(uiBoucle1, uiBoucle2 - uiTab[uiBoucle1]);
+			}
+			else
+			{
+				ValeurAjoute = TMATLireElement(uiBoucle1, (uiBoucle2 - uiTab[uiBoucle1]) % uiMATGetNombreColonne());
+			}
+			MATResultat.MATModifierElement(uiBoucle1, uiBoucle2, ValeurAjoute);
+		}
+	}
+	return MATResultat;
+}
+
+
 #endif

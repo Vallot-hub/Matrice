@@ -33,7 +33,7 @@ public:
 	unsigned int uiMATGetNombreLigne()const { return uiMATNombreLigne; };
 	void MATModifierElement(unsigned int iLigne, unsigned int iColonne, Type TElement);
 	CMatrice<Type> MATPermutation(Type *pTTab, unsigned int Taille);
-	CMatrice<Type> MATPermutationVecteur(unsigned int uiTab[uiMATGetNombreLigne()]);
+	CMatrice<Type> MATPermutationVecteur(unsigned int* puiTab);
 
 	/** Operation basic **/
 	void MATAfficherMatrice();
@@ -400,7 +400,8 @@ template<typename Type> CMatrice<Type> CMatrice<Type>::MATPermutation(Type *puiT
 	return MATResultat;
 }
 
-template<typename Type> CMatrice<Type> CMatrice<Type>::MATPermutationVecteur(unsigned int uiTab[uiMATGetNombreLigne()])
+
+template<typename Type> CMatrice<Type> CMatrice<Type>::MATPermutationVecteur(unsigned int* puiTab)
 {
 	CMatrice<Type> MATResultat = CMatrice(uiMATGetNombreLigne(), uiMATGetNombreColonne()); 
 	for (unsigned int uiBoucle1 = 0; uiBoucle1 < uiMATGetNombreLigne(); uiBoucle1++)
@@ -408,13 +409,13 @@ template<typename Type> CMatrice<Type> CMatrice<Type>::MATPermutationVecteur(uns
 		for (unsigned int uiBoucle2 = 0; uiBoucle2 < uiMATGetNombreColonne(); uiBoucle2++)
 		{
 			Type ValeurAjoute;
-			if((int)(uiBoucle2 - uiTab[uiBoucle1]) >= 0)
+			if((int)(uiBoucle2 - puiTab[uiBoucle1]) >= 0)
 			{
-				ValeurAjoute = TMATLireElement(uiBoucle1, uiBoucle2 - uiTab[uiBoucle1]);
+				ValeurAjoute = TMATLireElement(uiBoucle1, uiBoucle2 - puiTab[uiBoucle1]);
 			}
 			else
 			{
-				ValeurAjoute = TMATLireElement(uiBoucle1, (uiBoucle2 - uiTab[uiBoucle1]) % uiMATGetNombreColonne());
+				ValeurAjoute = TMATLireElement(uiBoucle1, (uiBoucle2 - puiTab[uiBoucle1]) % uiMATGetNombreColonne());
 			}
 			MATResultat.MATModifierElement(uiBoucle1, uiBoucle2, ValeurAjoute);
 		}
